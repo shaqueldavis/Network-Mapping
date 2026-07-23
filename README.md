@@ -9,10 +9,18 @@
     - or
     - Active: active (running)
 
+<img width="2008" height="408" alt="Screenshot 2026-07-23 124209" src="https://github.com/user-attachments/assets/66e7ad2f-b97c-4760-b5b8-777b073fdf35" />
+<br>
+<br>
+
 Get a Simpler Answer
 - run command
   - systemctl is-active postgresql
     - you want to see: active
+
+
+<br>
+<br>
    
 To check whether PostgreSQL starts automatically when the VM boots:
 - run command
