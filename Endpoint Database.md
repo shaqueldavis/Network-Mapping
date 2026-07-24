@@ -3,6 +3,9 @@
 ## create database
 
 ### 1. Verify the PostgreSQL service is running.
+
+Open the terminal on your Slingshot machine with ctl + alt + t and Verify PostgreSQL is running:
+
 ```bash
 sudo systemctl status postgresql
 ```
