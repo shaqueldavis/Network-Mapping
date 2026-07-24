@@ -301,6 +301,25 @@ VALUES (
     'replace this with your notes.'
 );
 ```
+
+If you make a mistake at any point you can correct it by running something along the lines of:
+```bash
+UPDATE endpoints
+SET
+    mac_address = 'corrected mac',
+    model = 'corrected model',
+    operating_system = 'corrected OS',
+    notes = NULL
+WHERE endpoint_id = 1;
+```
+
+A few things to note:
+- You can change multiple lines by separating them with commas.
+- the last line before the "WHERE" clause does not need a comma after it.
+- I have been separating each part of the command by hitting enter to move to a new line but the command can be executed as a continuous string.
+- NULL does not need single quotes around it. Either way works because the program will not execute until it sees a simi-colon. 
+- if you put a single quote inside of single quotes you must use two single quotes e.g. 'Wife''s laptop'.
+- if you make a mistake and move to the next line you can click ctrl C (on windows) to cancel the command and restart.
 <br>
 <br>
 <br>
@@ -311,6 +330,38 @@ VALUES (
 <br>
 
 
+## SCRATCH PAD
 
-
+---------------------------------------------------------
+---------------------------------------------------------
+```bash
+INSERT INTO endpoints (
+    device_name,
+    hostname,
+    device_type,
+    manufacturer,
+    model,
+    operating_system,
+    ip_address,
+    mac_address,
+    network_name,
+    wifi_band,
+    status,
+    notes
+)
+VALUES (
+    '_______________',
+    'hostname',
+    '_________________',
+    '__________________',
+    'CR1000B',
+    'operating_system',
+    '________________',
+    '________________',
+    'network name',
+    ' wifi_band',
+    'status',
+    'notes.'
+);
+```
 
