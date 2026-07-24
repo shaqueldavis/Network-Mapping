@@ -315,53 +315,15 @@ WHERE endpoint_id = 1;
 
 A few things to note:
 - You can change multiple lines by separating them with commas.
-- the last line before the "WHERE" clause does not need a comma after it.
+- The last line before the "WHERE" clause does not need a comma after it.
 - I have been separating each part of the command by hitting enter to move to a new line but the command can be executed as a continuous string.
 - NULL does not need single quotes around it. Either way works because the program will not execute until it sees a simi-colon. 
-- if you put a single quote inside of single quotes you must use two single quotes e.g. 'Wife''s laptop'.
-- if you make a mistake and move to the next line you can click ctrl C (on windows) to cancel the command and restart.
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-
-## SCRATCH PAD
-
----------------------------------------------------------
----------------------------------------------------------
-```bash
-INSERT INTO endpoints (
-    device_name,
-    hostname,
-    device_type,
-    manufacturer,
-    model,
-    operating_system,
-    ip_address,
-    mac_address,
-    network_name,
-    wifi_band,
-    status,
-    notes
-)
-VALUES (
-    '_______________',
-    'hostname',
-    '_________________',
-    '__________________',
-    'CR1000B',
-    'operating_system',
-    '________________',
-    '________________',
-    'network name',
-    ' wifi_band',
-    'status',
-    'notes.'
-);
+- If you put a single quote inside of single quotes you must use two single quotes e.g. 'Wife''s laptop'.
+- If you make a mistake and move to the next line you can click ctrl C (on windows) to cancel the command and restart.
+- If you're like me, you will be displaying your table as you progress to check for accuracy. Once your table reaches a certain length, PostgreSQL will pipe it to less. To return to the terminal type Q. To scroll to the last line type G (yes capitol g as in shift+g). To scroll to the top type g.
+- If you update a column it will display at the bottom, even if the ID is number 1. To organize columns by number you can add the following to your query:
+```SQL
+ORDER BY endpoint_id
 ```
+
 
