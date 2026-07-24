@@ -213,6 +213,8 @@ This will show the columns, data types, defaults, and primary key.
 <br>
 
 ### 5. Populate it with the endpoint information from your home network.
+Insert an endpoint device by running:
+
 ```sql
 INSERT INTO endpoints (
     device_name,
@@ -243,11 +245,12 @@ VALUES (
     'replace this with your notes.'
 );
 ```
+Remember to replace the values with your actual endpoint device. Start with you router.
 
 You should receive: 
 INSERT 0 1
 
-Now display the table. Because the output may be wide, PostgreSQL might display it awkwardly. You can enable expanded display first:
+Now display the table. Because the output may be wide, PostgreSQL might display it awkwardly. You can enable expanded display first. Expanded display shows one column per line, which is easier to read. Turn on expanded display by running:
 ```bash
 \x
 ```
@@ -257,15 +260,47 @@ Display the table with:
 ```bash
 SELECT * FROM endpoints;
 ```
-[There is intentionally no screen shot. It is a good security practice not to share the layout of your home network or any other internal network publicly]
+You should see the table appear line by line. The first two lines should resemble: 
 
+<img width="2196" height="94" alt="Screenshot 2026-07-24 093035" src="https://github.com/user-attachments/assets/1a7102e8-44d0-42cb-bbdf-af3dceb92ad3" />
+
+$\color{red}{\text{There is intentionally no screenshot of the full table. It is a good security practice not to share the layout of your home network.}}$
 
 <br>
 <br>
 
+Now repeat the process from above where we inserted an endpoint until all of your devices populate the table:
 
-<br>
-<br>
+```sql
+INSERT INTO endpoints (
+    device_name,
+    hostname,
+    device_type,
+    manufacturer,
+    model,
+    operating_system,
+    ip_address,
+    mac_address,
+    network_name,
+    wifi_band,
+    status,
+    notes
+)
+VALUES (
+    'replace this with your device name',
+    'replace this with your hostname',
+    'replace this with your device type',
+    'replace this with your manufacturer',
+    'replace this with your model',
+    'replace this with your operating_system',
+    'replace this with your IP e.g. 255.255.255.255',
+    'replace this with your e.g. AA:BB:CC:DD:EE:FF',
+    'replace this with your network name',
+    'replace this with your wifi_band 5 GHz',
+    'replace this with your status',
+    'replace this with your notes.'
+);
+```
 <br>
 <br>
 <br>
