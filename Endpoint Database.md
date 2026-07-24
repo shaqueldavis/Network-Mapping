@@ -62,7 +62,7 @@ postgres=#
 <br>
 
 Verify You're Connected
-```bash
+```SQL
 SELECT version();
 ```
 
@@ -76,7 +76,7 @@ PostgreSQL 10.18 on x86_64-pc-linux-gnu...
 <br>
 
 Next:
-```bash
+```SQL
 SELECT current_user;
 ```
  
@@ -86,11 +86,11 @@ SELECT current_user;
 <br>
 
 Finally, list the existing databases:
-```bash
+```SQL
 \l
 ```
 or
-```bash
+```SQL
 \list
 ```
 
@@ -104,7 +104,7 @@ These are the default databases PostgreSQL creates during installation.
 
 ### 3. Create a database named network_inventory.
 create the database with:
-```bash
+```SQL
 CREATE DATABASE network_inventory;
 ```
 
@@ -114,7 +114,7 @@ CREATE DATABASE network_inventory;
 <br>
 
 Verify it was created
-```bash
+```SQL
 \l
 ```
 
@@ -124,7 +124,7 @@ Verify it was created
 <br>
 
 You can also check for that specific database using:
-```bash
+```SQL
 SELECT datname FROM pg_database WHERE datname = 'network_inventory';
 ```
 
@@ -135,7 +135,7 @@ SELECT datname FROM pg_database WHERE datname = 'network_inventory';
 <br>
 
 Connect to the new database
-```bash
+```SQL
 \c network_inventory
 ```
 
@@ -147,7 +147,7 @@ Your prompt should  change to "network_inventory=#"
 <br>
 
 Confirm the current connection
-```bash
+```SQL
 SELECT current_database();
 ```
 
@@ -186,7 +186,7 @@ CREATE TABLE endpoints (
 <br>
 
 Verify the table by listing the tables in the current database:
-```bash
+```SQL
 \dt
 ```
 
@@ -198,7 +198,7 @@ You should see an entry named: endpoints
 <br>
 
 Then inspect its structure:
-```bash
+```SQL
 \d endpoints
 ```
 
@@ -251,13 +251,13 @@ You should receive:
 INSERT 0 1
 
 Now display the table. Because the output may be wide, PostgreSQL might display it awkwardly. You can enable expanded display first. Expanded display shows one column per line, which is easier to read. Turn on expanded display by running:
-```bash
+```SQL
 \x
 ```
 The same command turns it back off if you type it again later. 
 
 Display the table with:
-```bash
+```SQL
 SELECT * FROM endpoints;
 ```
 You should see the table appear line by line. The first two lines should resemble: 
@@ -303,7 +303,7 @@ VALUES (
 ```
 
 If you make a mistake at any point you can correct it by running something along the lines of:
-```bash
+```SQL
 UPDATE endpoints
 SET
     mac_address = 'corrected mac',
