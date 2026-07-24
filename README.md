@@ -3,10 +3,13 @@
 ## create database
 
 ### 1. Verify the PostgreSQL service is running.
-- sudo systemctl status postgresql
-  - You want to see: Active: active (exited)
-  - or
-  - Active: active (running)
+```bash
+sudo systemctl status postgresql
+```
+You want to see: 
+Active: active (exited)
+or
+Active: active (running)
 
 <img width="2008" height="408" alt="Screenshot 2026-07-23 124209" src="https://github.com/user-attachments/assets/66e7ad2f-b97c-4760-b5b8-777b073fdf35" />
 
@@ -14,8 +17,11 @@
 <br>
 
 Get a Simpler Answer
-- systemctl is-active postgresql
-  - you want to see: active
+```bash
+systemctl is-active postgresql
+```
+you want to see: 
+active
 
 <img width="1118" height="96" alt="Screenshot 2026-07-23 124411" src="https://github.com/user-attachments/assets/e10a8e04-ed4f-4de1-bd56-494a26c6bf4c" />
 
@@ -23,8 +29,12 @@ Get a Simpler Answer
 <br>
    
 To check whether PostgreSQL starts automatically when the VM boots:
-- systemctl is-enabled postgresql
-- you want to see: enabled
+```bash
+systemctl is-enabled postgresql
+```
+
+you want to see:
+enabled
 
 <img width="1214" height="94" alt="Screenshot 2026-07-23 124421" src="https://github.com/user-attachments/assets/aff20068-269b-4d17-a147-eb82dfc57286" />
 
@@ -35,14 +45,16 @@ To check whether PostgreSQL starts automatically when the VM boots:
 PostgreSQL creates a dedicated Linux user named postgres. This user owns the database server and has administrative privileges within PostgreSQL, similar to how root administers Linux.
 
 Rather than connecting directly as your normal Linux account, we'll switch to the postgres user and launch PostgreSQL's interactive command-line client, psql.
-- sudo -u postgres psql
+```bash
+sudo -u postgres psql
+```
   - Breaking down the command
     - sudo — execute a command with elevated privileges.
     - -u postgres — run the command as the Linux user postgres.
     - psql — start the PostgreSQL interactive shell.
 
 If everything works, your prompt should change to something like:
-- postgres=#
+postgres=#
 
 <img width="1180" height="248" alt="Screenshot 2026-07-23 124450" src="https://github.com/user-attachments/assets/ae8597a9-d505-47b9-afb1-a8fdf1663dee" />
 
@@ -50,10 +62,13 @@ If everything works, your prompt should change to something like:
 <br>
 
 Verify You're Connected
-- SELECT version();
+```bash
+SELECT version();
+```
 
 You should see output similar to:
-- PostgreSQL 10.18 on x86_64-pc-linux-gnu...
+PostgreSQL 10.18 on x86_64-pc-linux-gnu...
+
 
 <img width="2820" height="266" alt="Screenshot 2026-07-23 130427" src="https://github.com/user-attachments/assets/63d1d572-fb32-4310-b6b3-151b302e051f" />
 
@@ -61,7 +76,9 @@ You should see output similar to:
 <br>
 
 Next:
-- SELECT current_user;
+```bash
+SELECT current_user;
+```
  
 <img width="670" height="280" alt="Screenshot 2026-07-23 130620" src="https://github.com/user-attachments/assets/203546ee-0249-4e02-aeb8-6e5e692d6c23" />
 
@@ -69,9 +86,13 @@ Next:
 <br>
 
 Finally, list the existing databases:
-- \l
-- or
-- \list
+```bash
+\l
+```
+or
+```bash
+\list
+```
 
 <img width="1926" height="492" alt="Screenshot 2026-07-23 130801" src="https://github.com/user-attachments/assets/e8ca5542-f69d-4b06-96c1-b64d65e22bc5" />
 
@@ -83,7 +104,9 @@ These are the default databases PostgreSQL creates during installation.
 
 ### 3. Create a database named network_inventory.
 create the database with:
-- CREATE DATABASE network_inventory;
+```bash
+CREATE DATABASE network_inventory;
+```
 
 <img width="1060" height="98" alt="Screenshot 2026-07-23 134350" src="https://github.com/user-attachments/assets/44de2733-005d-479f-b753-6a0beb032d09" />
 
@@ -91,7 +114,9 @@ create the database with:
 <br>
 
 Verify it was created
-- \l
+```bash
+\l
+```
 
 <img width="2018" height="532" alt="Screenshot 2026-07-23 134546" src="https://github.com/user-attachments/assets/6ba9175f-a9cb-488d-be19-179a9524607d" />
 
@@ -99,7 +124,10 @@ Verify it was created
 <br>
 
 You can also check for that specific database using:
-- SELECT datname FROM pg_database WHERE datname = 'network_inventory';
+```bash
+SELECT datname FROM pg_database WHERE datname = 'network_inventory';
+```
+
 
 <img width="1810" height="244" alt="Screenshot 2026-07-23 135941" src="https://github.com/user-attachments/assets/d94e7873-c22e-4e34-a576-a4857c4b9514" />
 
@@ -107,7 +135,9 @@ You can also check for that specific database using:
 <br>
 
 Connect to the new database
-- \c network_inventory
+```bash
+\c network_inventory
+```
 
 Your prompt should  change to "network_inventory=#"
 
@@ -117,7 +147,10 @@ Your prompt should  change to "network_inventory=#"
 <br>
 
 Confirm the current connection
-- SELECT current_database();
+```bash
+SELECT current_database();
+```
+
 
 <img width="1086" height="228" alt="Screenshot 2026-07-23 141210" src="https://github.com/user-attachments/assets/ad423b39-84cc-484e-b2d7-c533d818ebe2" />
 
@@ -127,7 +160,8 @@ Confirm the current connection
 ### 4. Design and create the endpoints table.
 
 For the first version, we’ll create one practical table that stores each device’s identity, network placement, and tracking information.
-- CREATE TABLE endpoints (
+```sql
+CREATE TABLE endpoints (
     endpoint_id SERIAL PRIMARY KEY,
     device_name VARCHAR(100) NOT NULL,
     hostname VARCHAR(100),
@@ -144,12 +178,91 @@ For the first version, we’ll create one practical table that stores each devic
     last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notes TEXT
 );
+```
 
 <img width="1536" height="896" alt="Screenshot 2026-07-23 143355" src="https://github.com/user-attachments/assets/3634ae0e-3e81-4a45-94b6-45722bf0a778" />
 
 <br>
 <br>
 
+Verify the table by listing the tables in the current database:
+```bash
+\dt
+```
+
+You should see an entry named: endpoints
+
+<img width="884" height="298" alt="Screenshot 2026-07-23 183605" src="https://github.com/user-attachments/assets/0f265162-f47a-43ab-8ef0-f2ad3af2d75c" />
+
+<br>
+<br>
+
+Then inspect its structure:
+```bash
+\d endpoints
+```
+
+<img width="2640" height="978" alt="Screenshot 2026-07-23 184000" src="https://github.com/user-attachments/assets/cd1f1623-ffa0-4219-ade5-2d499a7c2585" />
+
+<br>
+<br>
+
+This will show the columns, data types, defaults, and primary key.
+
+<br>
+<br>
+
+### 5. Populate it with the endpoint information from your home network.
+```sql
+INSERT INTO endpoints (
+    device_name,
+    hostname,
+    device_type,
+    manufacturer,
+    model,
+    operating_system,
+    ip_address,
+    mac_address,
+    network_name,
+    wifi_band,
+    status,
+    notes
+)
+VALUES (
+    'replace this with your device name',
+    'replace this with your hostname',
+    'replace this with your device type',
+    'replace this with your manufacturer',
+    'replace this with your model',
+    'replace this with your operating_system',
+    'replace this with your IP e.g. 255.255.255.255',
+    'replace this with your e.g. AA:BB:CC:DD:EE:FF',
+    'replace this with your network name',
+    'replace this with your wifi_band 5 GHz',
+    'replace this with your status',
+    'replace this with your notes.'
+);
+```
+
+You should receive: 
+INSERT 0 1
+
+Now display the table. Because the output may be wide, PostgreSQL might display it awkwardly. You can enable expanded display first:
+```bash
+\x
+```
+The same command turns it back off if you type it again later. 
+
+Display the table with:
+```bash
+SELECT * FROM endpoints;
+```
+[There is intentionally no screen shot. It is a good security practice not to share the layout of your home network or any other internal network publicly]
+
+
+<br>
+<br>
+
 
 <br>
 <br>
@@ -161,16 +274,7 @@ For the first version, we’ll create one practical table that stores each devic
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 
-### 5. Populate it with the endpoint information you've already been documenting from your home network.
 
 
 
