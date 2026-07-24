@@ -33,3 +33,7 @@ list all steps here. you can also have chat GPT break this down for you
 ```
 
 ### Phase 1: <a href="Endpoint Database.md">Creating Database for Network Endpoints</a>
+
+### Phase 2: <a href="Endpoint Database.md">Creating list of allowed endpoints on network</a>
+
+
