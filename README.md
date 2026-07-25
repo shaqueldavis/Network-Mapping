@@ -10,7 +10,7 @@ This walkthrough will require you to download the Community Edition **Slingshot 
 
 <a href="https://www.sans.org/tools/slingshot"><img src="https://img.shields.io/badge/-Download Link-0072b1?&style=for-the-badge&logo=SANS&logoColor=white" /></a>
 
-This walkthrough also assumes that you have familiarity with downloading and operating virtual machine software such as VMWare and VirtualBox. Here we will be using VMWare Workstation Pro. 
+This walkthrough also assumes that you have familiarity with downloading and operating virtual machine software such as VMWare and VirtualBox. Here we will be using **VMWare Workstation Pro**. 
 
 Before beginning you will also want to create a list of all of your endpoint devices from your network. Most routers come with an app that allows you manage your network. You can usually find a list of active and sometimes even cached devices on your network through the app. <br>
 As an alternative you can also visit a weblink to control your router via a web browser. This information is usually found on the back or bottom of your router labeled as something along the lines of “Router Login” or “Network Settings URL”. Here you will also be able to find a list of devices connected to your network. <br>
