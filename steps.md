@@ -62,6 +62,54 @@ sudo ufw status verbose
 <br>
 <br>
 
+### 3. Switch VM to Bridge Mode
+
+I will walk you through the process of performing this action with VMWare Workstation Pro. If you are using VirtualBox you can utilize OSINT to find instructions. There are plenty of reputable sources. You can even try Chat GPT. 
+
+Close out of the terminal and shut down the VM:
+
+<img width="1474" height="520" alt="image" src="https://github.com/user-attachments/assets/03c00529-513a-41dd-ab97-ed725244d18c" />
+
+The VM must be restarted in order for the change from NAT to bridge to take effect. In this case we are simply shutting it down, making the change, and starting it back up after.
+
+<br>
+<br>
+
+From the top menu bar, select VM > settings, or hit ctrl + D.
+
+<img width="1448" height="688" alt="Screenshot 2026-07-24 223507" src="https://github.com/user-attachments/assets/c30f85ef-e918-4245-981d-1228cabac498" />
+
+<br>
+<br>
+<br>
+<br>
+
+From the Hardware tab, choose Network Adapter. It should be set to NAT by default.
+
+Switch it to `Bridged` and check the box for `Replicate physical network connection state`.
+
+When enabled, VMware tries to make the VM's network connection mirror the state of your physical computer's network adapter. 
+
+Without this option, the VM may think it's still connected even after the host has changed networks, sometimes requiring you to disable/re-enable the virtual adapter or reboot the VM. 
+
+<img width="1494" height="1434" alt="Screenshot 2026-07-24 224212" src="https://github.com/user-attachments/assets/07176e0a-24ea-4118-9203-74c87a41db85" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 -----------------------------------------
@@ -91,4 +139,5 @@ Scan for live hosts on your network:
 ```bash
 nmap -sn 203.0.113.0/24
 ```
+
 
