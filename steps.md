@@ -135,12 +135,12 @@ replace the IP address with your routers IP address.
 
 You should see a list of all hosts currently active on your network. Most if not all of these IP addresses should look familiar. 
 
-Now run the command again, but this time save the output to a grepable file. Do this by simply appending `-oG` and the desired file name with `.gnmap` to the end of the command:
+Now run the command again, but this time save the output to a grepable file. Do this by simply appending `-oG` and the desired file name with the file extension `.gnmap` to the end of the command:
 
 ```bash
 sudo nmap -sn 192.168.x.0/24 -oG hosts.gnmap
 ```
-
+Note: you can also use `-oN` with extension `.txt`, `-oX` with extension `.xml`, or `-oA` with no extension for all three formats in three seprate files.
 
 
 
