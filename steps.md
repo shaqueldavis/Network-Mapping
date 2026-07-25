@@ -86,41 +86,33 @@ From the top menu bar, select VM > settings, or hit ctrl + D.
 
 From the Hardware tab, choose Network Adapter. It should be set to NAT by default.
 
-Switch it to `Bridged` and check the box for `Replicate physical network connection state`.
+Switch it to `Bridged`, check the box for `Replicate physical network connection state` and click ok.
 
-When enabled, VMware tries to make the VM's network connection mirror the state of your physical computer's network adapter. 
+When the check box is enabled, VMware tries to make the VM's network connection mirror the state of your physical computer's network adapter. 
 
 Without this option, the VM may think it's still connected even after the host has changed networks, sometimes requiring you to disable/re-enable the virtual adapter or reboot the VM. 
 
 <img width="1494" height="1434" alt="Screenshot 2026-07-24 224212" src="https://github.com/user-attachments/assets/07176e0a-24ea-4118-9203-74c87a41db85" />
 
+<br>
+<br>
+<br>
+<br>
 
+### 4. Perform a Network Scan
 
+Restart your VM and open a terminal window.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
------------------------------------------
-
-Step 1.2
-Discover the local gate way of your VM.
+confirm that Bridged mode is working correctly:
 ```bash
 route -n
 ```
+Your Gateway should be set to the same IP address as your home router.
 
-<img width="2074" height="376" alt="Screenshot 2026-07-24 161017" src="https://github.com/user-attachments/assets/9dcb8942-f16b-4fb1-a88a-f4e914bfcdea" />
+<img width="2420" height="530" alt="Screenshot 2026-07-24 232006" src="https://github.com/user-attachments/assets/659fa955-b52b-4840-a001-bc6644705567" />
+I have redacted some of my network information simply as a security best practice.
+
+The IP address under the Gateway column is what you're looking for. This gives you your subnet range, which we will need later for our network scans with nmap.
 
 <br>
 <br>
@@ -135,9 +127,23 @@ nmap --version
 <br>
 <br>
 
-Scan for live hosts on your network:
+Test nmap to make sure it's working by performing a simple host scan for live hosts on your network:
 ```bash
-nmap -sn 203.0.113.0/24
+sudo nmap -sn 192.168.x.0/24
 ```
+replace the IP address with your routers IP address.
+
+You should see a list of all hosts currently active on your network. Most if not all of these IP addresses should look familiar. 
+
+Now run the command again, but this time save the output to a grepable file. Do this by simply appending `-oG` and the desired file name with `.gnmap` to the end of the command:
+
+```bash
+sudo nmap -sn 192.168.x.0/24 -oG hosts.gnmap
+```
+
+
+
+
+
 
 
