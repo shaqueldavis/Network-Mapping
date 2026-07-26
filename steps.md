@@ -136,7 +136,7 @@ replace the IP address with your routers IP address.
 
 You should see a list of all hosts currently active on your network. Most if not all of these IP addresses should look familiar. 
 
-Now it's time to automate this scan with a bash script.  Before we do, we want to find out where nmap is located. To do this run:
+Now it's time to automate this scan with a bash script. Before we do, we want to find out where nmap is located. To do this run:
 ```bash
 Which nmap
 ```
@@ -273,12 +273,394 @@ Note: you can save these various output files when running in map by using `-oN`
 
 Take a look at each file to examine the output. .gnmap is a simplified grepable file with ip addresses. .txt file resembles exactly what you see in your terminal and .xml is the best file to use with scripts and automated processes.
 
+<br>
+<br>
 
-# discover the path for nmap: you will need this for the script
+Now we will create a script that will take the output of our nmap scan and compare it to the content in our baseline endpoints.csv file. It will tell us if any unrecognized devices appear on our network. 
+```bash
+gedit compare_network_scan.sh &
+```
 
-# create a file and paste this script into it
+Now paste the following script into the file:
 
-# create second file and paste second script
+```bash
+#!/usr/bin/env bash
+
+# compare_network_scan.sh
+#
+# Finds the newest Nmap XML scan, compares its discovered MAC addresses
+# against an approved endpoints.csv baseline, and writes a concise report.
+#
+# Exit codes:
+#   0 = All identifiable devices are approved
+#   1 = Unknown or unverifiable devices were detected
+#   2 = Script/configuration error
+
+set -u
+set -o pipefail
+
+###########################################################
+# CONFIGURATION — UPDATE THESE PATHS
+###########################################################
+
+BASELINE_CSV="${BASELINE_CSV:-$HOME/Desktop/Network-Mapping/text-notes/endpoints.csv}"
+
+XML_SCAN_DIR="${XML_SCAN_DIR:-$HOME/Desktop/Network-Mapping/network-scan-logs}"
+
+REPORT_DIR="${REPORT_DIR:-$HOME/Desktop/Network-Mapping/comparison-reports}"
+
+###########################################################
+# SETUP
+###########################################################
+
+mkdir -p "$REPORT_DIR" || {
+    echo "Error: Could not create report directory: $REPORT_DIR" >&2
+    exit 2
+}
+
+timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+report_file="$REPORT_DIR/network-comparison-$timestamp.log"
+latest_report="$REPORT_DIR/latest-network-comparison.log"
+
+###########################################################
+# VALIDATE BASELINE
+###########################################################
+
+if [[ ! -f "$BASELINE_CSV" ]]; then
+    echo "ERROR: Baseline CSV was not found: $BASELINE_CSV" |
+        tee "$report_file" >&2
+    exit 2
+fi
+
+if [[ ! -r "$BASELINE_CSV" ]]; then
+    echo "ERROR: Baseline CSV is not readable: $BASELINE_CSV" |
+        tee "$report_file" >&2
+    exit 2
+fi
+
+###########################################################
+# FIND THE NEWEST XML SCAN
+###########################################################
+
+latest_xml=$(
+    find "$XML_SCAN_DIR" \
+        -maxdepth 1 \
+        -type f \
+        -name '*.xml' \
+        -printf '%T@ %p\n' 2>/dev/null |
+    sort -nr |
+    head -n 1 |
+    cut -d' ' -f2-
+)
+
+if [[ -z "$latest_xml" ]]; then
+    {
+        echo "STATUS: ERROR"
+        echo "No Nmap XML scan files were found."
+        echo "Scan directory: $XML_SCAN_DIR"
+    } | tee "$report_file" >&2
+
+    ln -sfn "$(basename "$report_file")" "$latest_report"
+    exit 2
+fi
+
+###########################################################
+# COMPARE THE CSV AND XML
+###########################################################
+
+python3 - "$BASELINE_CSV" "$latest_xml" "$report_file" <<'PYTHON'
+import csv
+import re
+import sys
+import xml.etree.ElementTree as ET
+from datetime import datetime
+from pathlib import Path
+
+
+baseline_path = Path(sys.argv[1])
+xml_path = Path(sys.argv[2])
+report_path = Path(sys.argv[3])
+
+
+def normalize_mac(value: str) -> str:
+    """Normalize a MAC address into lowercase colon-separated form."""
+    value = value.strip().lower().replace("-", ":")
+    return value
+
+
+def valid_mac(value: str) -> bool:
+    """Return True when value resembles a standard six-byte MAC address."""
+    return bool(
+        re.fullmatch(
+            r"[0-9a-f]{2}(:[0-9a-f]{2}){5}",
+            value,
+        )
+    )
+
+
+approved_by_mac = {}
+baseline_errors = []
+
+try:
+    with baseline_path.open(
+        mode="r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as baseline_file:
+        reader = csv.DictReader(baseline_file)
+
+        required_columns = {
+            "device_name",
+            "ip_address",
+            "mac_address",
+        }
+
+        actual_columns = set(reader.fieldnames or [])
+
+        missing_columns = required_columns - actual_columns
+
+        if missing_columns:
+            missing = ", ".join(sorted(missing_columns))
+            print(
+                f"Baseline CSV is missing required column(s): {missing}",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+
+        for line_number, row in enumerate(reader, start=2):
+            device_name = (row.get("device_name") or "").strip()
+            baseline_ip = (row.get("ip_address") or "").strip()
+            mac = normalize_mac(row.get("mac_address") or "")
+
+            if not mac:
+                baseline_errors.append(
+                    f"Line {line_number}: {device_name or 'Unnamed device'} "
+                    "has no MAC address."
+                )
+                continue
+
+            if not valid_mac(mac):
+                baseline_errors.append(
+                    f"Line {line_number}: Invalid MAC address '{mac}' "
+                    f"for {device_name or 'Unnamed device'}."
+                )
+                continue
+
+            if mac in approved_by_mac:
+                existing_name = approved_by_mac[mac]["device_name"]
+                baseline_errors.append(
+                    f"Line {line_number}: Duplicate MAC address {mac} "
+                    f"is assigned to both '{existing_name}' and "
+                    f"'{device_name}'."
+                )
+                continue
+
+            approved_by_mac[mac] = {
+                "device_name": device_name or "Unnamed approved device",
+                "baseline_ip": baseline_ip or "-",
+            }
+
+except OSError as error:
+    print(f"Could not read baseline CSV: {error}", file=sys.stderr)
+    sys.exit(2)
+
+
+try:
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+except ET.ParseError as error:
+    print(
+        f"Could not parse Nmap XML file '{xml_path}': {error}",
+        file=sys.stderr,
+    )
+    sys.exit(2)
+except OSError as error:
+    print(f"Could not read Nmap XML file: {error}", file=sys.stderr)
+    sys.exit(2)
+
+
+approved_devices = []
+unknown_devices = []
+unverified_devices = []
+
+for host in root.findall("host"):
+    status_element = host.find("status")
+
+    if (
+        status_element is not None
+        and status_element.get("state") != "up"
+    ):
+        continue
+
+    ipv4 = "-"
+    mac = ""
+    vendor = "-"
+
+    for address in host.findall("address"):
+        address_type = address.get("addrtype")
+        address_value = address.get("addr", "").strip()
+
+        if address_type == "ipv4":
+            ipv4 = address_value
+
+        elif address_type == "mac":
+            mac = normalize_mac(address_value)
+            vendor = address.get("vendor", "-").strip() or "-"
+
+    hostname = "-"
+
+    hostname_element = host.find("./hostnames/hostname")
+
+    if hostname_element is not None:
+        hostname = hostname_element.get("name", "-").strip() or "-"
+
+    device = {
+        "ip": ipv4,
+        "mac": mac or "-",
+        "hostname": hostname,
+        "vendor": vendor,
+    }
+
+    if not mac:
+        unverified_devices.append(device)
+        continue
+
+    if mac in approved_by_mac:
+        approved = approved_by_mac[mac]
+
+        device["device_name"] = approved["device_name"]
+        device["baseline_ip"] = approved["baseline_ip"]
+
+        approved_devices.append(device)
+    else:
+        unknown_devices.append(device)
+
+
+alert_detected = bool(
+    unknown_devices
+    or unverified_devices
+    or baseline_errors
+)
+
+status = "ALERT" if alert_detected else "NORMAL"
+
+report_lines = [
+    f"STATUS: {status}",
+    f"Comparison time: {datetime.now().astimezone().isoformat(timespec='seconds')}",
+    f"Baseline file: {baseline_path}",
+    f"Nmap XML file: {xml_path}",
+    "",
+]
+
+if status == "NORMAL":
+    report_lines.extend(
+        [
+            "All scanned devices with detectable MAC addresses "
+            "are present in the approved baseline.",
+            f"Approved devices detected: {len(approved_devices)}",
+        ]
+    )
+
+else:
+    if unknown_devices:
+        report_lines.extend(
+            [
+                "UNKNOWN DEVICES:",
+                "The following MAC addresses are not present in "
+                "the approved baseline:",
+            ]
+        )
+
+        for device in unknown_devices:
+            report_lines.append(
+                "  - "
+                f"IP: {device['ip']} | "
+                f"MAC: {device['mac']} | "
+                f"Hostname: {device['hostname']} | "
+                f"Vendor: {device['vendor']}"
+            )
+
+        report_lines.append("")
+
+    if unverified_devices:
+        report_lines.extend(
+            [
+                "UNVERIFIED DEVICES:",
+                "Nmap detected the following active hosts but did "
+                "not provide their MAC addresses:",
+            ]
+        )
+
+        for device in unverified_devices:
+            report_lines.append(
+                "  - "
+                f"IP: {device['ip']} | "
+                f"Hostname: {device['hostname']}"
+            )
+
+        report_lines.extend(
+            [
+                "",
+                "Because these hosts have no MAC address in the XML scan, "
+                "the script cannot determine whether they are approved.",
+                "",
+            ]
+        )
+
+    if baseline_errors:
+        report_lines.append("BASELINE WARNINGS:")
+
+        for error in baseline_errors:
+            report_lines.append(f"  - {error}")
+
+        report_lines.append("")
+
+report_path.write_text(
+    "\n".join(report_lines).rstrip() + "\n",
+    encoding="utf-8",
+)
+
+print("\n".join(report_lines))
+
+sys.exit(1 if alert_detected else 0)
+PYTHON
+
+comparison_exit_code=$?
+
+###########################################################
+# MAINTAIN A LINK TO THE NEWEST REPORT
+###########################################################
+
+ln -sfn "$(basename "$report_file")" "$latest_report"
+
+case "$comparison_exit_code" in
+    0)
+        exit 0
+        ;;
+
+    1)
+        exit 1
+        ;;
+
+    *)
+        {
+            echo
+            echo "STATUS: ERROR"
+            echo "The comparison could not be completed."
+        } >> "$report_file"
+
+        exit 2
+        ;;
+esac
+```
+
+Again you will immediately know from the comments that there are three things that need to be verified or changed before running this script.
+- BASELINE_CSV
+- XML_SCAN_DIR
+- REPORT_DIR
+These 3 variables contain directory paths. The first one, BASELINE_CSV, points to the endpoints.csv file that we exported from PostgreSQL with a list of our endpoint devices. <br>
+The second, XML_SCAN_DIR, points to the directory path that the nmap script is saving its output to. <br>
+The third, REPORT_DIR, is the file where this script will save its output to.
 
 # set time of your VM to match your time zone
 
