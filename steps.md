@@ -678,6 +678,20 @@ Now run the script to test it out:
 
 Your output should look similar. As usual I have redacted some of the information as a security best practice. 
 
+<br>
+<br>
+
+Now check the folder where you have set this script to output its reports. For me that folder is `~/Desktop/Network-Mapping/comparison-reports`. <br>
+In this folder you will notice that there are two files. One will be colored blue, the other will be black like a regular file. At the moment they both contain the exact same content. In the future, every time this script runs a new file will be created. The regular black file that is there now will be old and a new file will be added to the folder. The blue file will always point to whichever file is newest in this folder.
+
+<img width="2588" height="150" alt="image" src="https://github.com/user-attachments/assets/9e4efbec-a049-4efe-bc03-3ab4f13b1e2e" />
+
+You can take a look in either one of these to see the contents, but it should be the exact same thing you saw in the terminal. <br>
+In my output you will notice that there are two unrecognized devices. I know that one is my VM as it is listed as “Home-Lab”. The other I know is my phone. I have left these to show how the output of the script may vary. 
+
+<br>
+<br>
+
 # set time of your VM to match your time zone
 
 # automate these scripts to run with crontab
