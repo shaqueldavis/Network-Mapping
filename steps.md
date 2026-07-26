@@ -255,7 +255,14 @@ now run the script:
 ```bash
 ./host-scan-script-nmap.sh
 ```
+The first part of the output should look something like this. 
 
+<img width="2850" height="844" alt="image" src="https://github.com/user-attachments/assets/218f8fc1-0426-414d-8cab-286f55994082" />
+
+The rest should contain a list of the active hosts on your network identified by their IP addresses and Mac addresses. I have not included the portion listing my network devices as a security best practice. 
+
+<br>
+<br>
 
 
 
