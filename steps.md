@@ -136,6 +136,128 @@ replace the IP address with your routers IP address.
 
 You should see a list of all hosts currently active on your network. Most if not all of these IP addresses should look familiar. 
 
+Now it's time to automate this scan with a bash script.  Before we do, we want to find out where nmap is located. To do this run:
+```bash
+Which nmap
+```
+
+<img width="2120" height="150" alt="image" src="https://github.com/user-attachments/assets/8a6f1df8-78f9-4a3f-9320-a2b352a39f50" />
+
+This will reveal the path to nmap on your VM. You will need this for the script.
+
+<br>
+<br>
+
+Create a file with gedit: 
+```bash
+gedit host-scan-script-nmap.sh &
+```
+
+The gedit text opener will open up. Copy the script below and paste it into the editor.
+```bash
+#!/usr/bin/env bash
+# host-scan-script-nmap.sh
+# Runs an Nmap host-discovery scan and saves the results in greppable format.
+# The script may be executed manually or scheduled through cron.
+
+#########################################
+#  THIS AREA MAY REQUIRE MODIFICATION
+#########################################
+# Replace this with your LAN/subnet if desired
+SUBNET="${SUBNET:-192.168.1.0/24}"
+
+#########################################
+#  THIS AREA WILL REQUIRE MODIFICATION
+#########################################
+# Output directory (will be created if missing)
+OUTDIR="${OUTDIR:-$HOME/Desktop/Network-Mapping/network-scan-logs}"
+mkdir -p "$OUTDIR"
+
+#########################################
+#  THIS AREA MAY REQUIRE MODIFICATION
+#########################################
+# Absolute path to the Nmap executable.
+# Verify with: which nmap
+NMAP="/usr/bin/nmap"
+
+# --- PREPARE OUTPUT FILE (single greppable file) ---
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+OUTBASE="$OUTDIR/nmap-scan-${TIMESTAMP}"
+
+GNMAP_FILE="${OUTBASE}.gnmap"
+NORMAL_FILE="${OUTBASE}.txt"
+XML_FILE="${OUTBASE}.xml"
+
+# Use sudo if it is available without a password prompt;
+# otherwise run Nmap as the current user.
+if sudo -n true 2>/dev/null; then
+  SUDO="sudo"
+else
+  SUDO=""
+fi
+
+# print a clear timestamped header so cron.log is easy to read
+echo "=== [$(date '+%F %T %Z')] Running Nmap scan ==="
+echo "Grepable output: $GNMAP_FILE"
+echo "Normal output:   $NORMAL_FILE"
+echo "XML output:      $XML_FILE"
+
+# Run nmap 
+# -sn: host discovery only
+# -PR: use ARP discovery on the local Ethernet network
+# -oG: grepable output for simple IP extraction
+# -oN: human-readable output
+# -oX: XML output containing structured IP and MAC information
+${SUDO} "$NMAP" \
+  -sn \
+  -PR \
+  "$SUBNET" \
+  -oG "$GNMAP_FILE" \
+  -oN "$NORMAL_FILE" \
+  -oX "$XML_FILE"
+
+RC=$?
+
+# print a footer summarizing result and exit code for easy log parsing
+echo "=== [$(date '+%F %T %Z')] Nmap finished (exit code: $RC) ==="
+# 
+
+exit $RC
+```
+In this script you may need to adjust the subnet to make sure it is in alignment with your network. You will need to change the OUTDIR (output) path so that. You may also need to change the path for nmap to the appropriate path on your VM. 
+
+<br>
+<br>
+
+After verifying the nmap path, subnet range, and changing the output directory to the folder where you want your logs, we will run the script to test it out.
+
+In order to run the script we have to give ourselves execute permissions for the script:
+```bash
+chmod 700 host-scan-script-nmap.sh
+```
+
+<img width="2842" height="214" alt="image" src="https://github.com/user-attachments/assets/75ed7206-9e2b-4583-9122-3be342479276" />
+
+<br>
+<br>
+
+Now check to make sure the permissions are set to give you execute permissions. You should notice two things. The color of the file should be green and the the first three fields of the permissions should be set to rwx.
+```bash
+ls -l
+```
+
+<img width="2296" height="264" alt="image" src="https://github.com/user-attachments/assets/241f5150-1823-4951-bb43-64a8431779f5" />
+
+<br>
+<br>
+
+now run the script:
+```bash
+./host-scan-script-nmap.sh
+```
+
+
+
 
 
 # discover the path for nmap: you will need this for the script
