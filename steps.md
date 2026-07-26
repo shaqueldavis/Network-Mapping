@@ -692,9 +692,58 @@ In my output you will notice that there are two unrecognized devices. I know tha
 <br>
 <br>
 
-# set time of your VM to match your time zone
+### Change the Time Zone from the Terminal
+
+Check your current settings:
+```bash
+timedatectl
+```
+SCREENSHOT HERE
+
+<br>
+<br>
+
+List available time zones
+```bash
+timedatectl list-timezones
+```
+
+You can also narrow it down by looking for your specific time zone:
+```bash
+timedatectl list-timezones | grep New_York
+```
+SCREENSHOT HERE
+
+<br>
+<br>
+
+Set the time zone:
+```bash
+sudo timedatectl set-timezone America/New_York
+```
+
+Verify it worked
+```bash
+timedatectl
+```
+
+
+
 
 # automate these scripts to run with crontab
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
