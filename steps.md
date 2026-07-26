@@ -264,7 +264,14 @@ The rest should contain a list of the active hosts on your network identified by
 <br>
 <br>
 
+Now switch to the output directory you have set the script to output logs to. For me that folder path is `~/Desktop/Network-Mapping/network-scan-logs`. 
 
+<img width="2252" height="218" alt="image" src="https://github.com/user-attachments/assets/70093b9f-d6fb-4f4d-9ce6-3473516ddf17" />
+
+The website should be populated with 3 files: a .txt file, a .xml file and a .gnmap file.
+Note: you can save these various output files when running in map by using `-oN` with extension `.txt`, `-oX` with extension `.xml`, or `-oA` with no extension for all three formats in three separate files.
+
+Take a look at each file to examine the output. .gnmap is a simplified grepable file with ip addresses. .txt file resembles exactly what you see in your terminal and .xml is the best file to use with scripts and automated processes.
 
 
 # discover the path for nmap: you will need this for the script
