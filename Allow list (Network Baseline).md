@@ -118,7 +118,7 @@ It will say your username in place of "shaquel"
 now we will run the command needed to create a file in your local directory with a list of our device names and IP addresses:
 
 ```bash
-\copy (SELECT device_name, ip_address FROM endpoints WHERE status = 'active' AND ip_address IS NOT NULL ORDER BY ip_address) TO '/home/shaquel/Desktop/Network-Mapping/text-notes/endpoints.csv' WITH (FORMAT csv, HEADER);
+\copy (SELECT device_name, ip_address, mac_address FROM endpoints WHERE status = 'active' AND ip_address IS NOT NULL ORDER BY ip_address) TO '/home/shaquel/Desktop/Network-Mapping/text-notes/endpoints.csv' WITH (FORMAT csv, HEADER);
 ```
 
 <img width="2880" height="288" alt="image" src="https://github.com/user-attachments/assets/26166d83-b59a-4c8d-967f-e062623079a9" />
