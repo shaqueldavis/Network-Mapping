@@ -224,7 +224,9 @@ echo "=== [$(date '+%F %T %Z')] Nmap finished (exit code: $RC) ==="
 
 exit $RC
 ```
-In this script you may need to adjust the subnet to make sure it is in alignment with your network. You will need to change the OUTDIR (output) path so that. You may also need to change the path for nmap to the appropriate path on your VM. 
+In this script you may need to adjust the subnet to make sure it is in alignment with your network. You will need to change the OUTDIR (output) path so that. You may also need to change the path for nmap to the appropriate path on your VM.
+
+Hit save in the upper right hand corner and close gedit.
 
 <br>
 <br>
@@ -661,6 +663,20 @@ Again you will immediately know from the comments that there are three things th
 These 3 variables contain directory paths. The first one, BASELINE_CSV, points to the endpoints.csv file that we exported from PostgreSQL with a list of our endpoint devices. <br>
 The second, XML_SCAN_DIR, points to the directory path that the nmap script is saving its output to. <br>
 The third, REPORT_DIR, is the file where this script will save its output to.
+
+Once more you will need to update the execute permissions for this new script:
+```bash
+chmod 700 compare_network_scan.sh
+```
+
+Now run the script to test it out:
+```bash
+./compare_network_scan.sh
+```
+
+<img width="2880" height="1226" alt="Screenshot 2026-07-26 154744" src="https://github.com/user-attachments/assets/dde9b2f7-f6fa-4762-a1c3-6e5c1eb45744" />
+
+Your output should look similar. As usual I have redacted some of the information as a security best practice. 
 
 # set time of your VM to match your time zone
 
