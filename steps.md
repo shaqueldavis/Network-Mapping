@@ -148,3 +148,94 @@ Note: you can also use `-oN` with extension `.txt`, `-oX` with extension `.xml`,
 
 
 
+
+
+
+--------------------------------------------------------------------------------------
+
+
+### Automate the scan with a script
+
+We will be using cron to automate the script. Open cron:
+```bash
+crontab -e
+```
+<img width="2186" height="816" alt="image" src="https://github.com/user-attachments/assets/0149360b-d452-4391-a249-b14a3405a91e" />
+
+The first time you run it, Linux may ask which editor you'd like to use (nano, vim, etc.).
+
+Type `2` to select nano and hit enter.
+
+<br>
+<br>
+
+You should see:
+
+<img width="2878" height="1618" alt="Screenshot 2026-07-25 225254" src="https://github.com/user-attachments/assets/b8b18d23-044d-4744-be0c-11936b0a150e" />
+
+<br>
+<br>
+
+You can leave the comments there for now. Scroll down using the down arrow key until you reach the bottom and then hit enter a few times just to create some space.
+
+```bash
+#!/usr/bin/env bash
+# host-scan-script-nmap.sh
+# Runs an Nmap host-discovery scan and saves the results in greppable format.
+# The script may be executed manually or scheduled through cron.
+
+#########################################
+#  THIS AREA MAY REQUIRE MODIFICATION
+#########################################
+# Replace this with your LAN/subnet if desired
+SUBNET="${SUBNET:-192.168.1.0/24}"
+
+#########################################
+#  THIS AREA WILL REQUIRE MODIFICATION
+#########################################
+# Output directory (will be created if missing)
+OUTDIR="${OUTDIR:-$HOME/Desktop/Github/Network_Mapping/Host_Scans}"
+mkdir -p "$OUTDIR"
+
+#########################################
+#  THIS AREA MAY REQUIRE MODIFICATION
+#########################################
+# Absolute path to the Nmap executable.
+# Verify with: which nmap
+NMAP="/usr/bin/nmap"
+
+# --- PREPARE OUTPUT FILE (single greppable file) ---
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+OUTFILE="$OUTDIR/nmap-scan-${TIMESTAMP}.gnmap"
+
+# Use sudo if it is available without a password prompt;
+# otherwise run Nmap as the current user.
+if sudo -n true 2>/dev/null; then
+  SUDO="sudo"
+else
+  SUDO=""
+fi
+
+# <<< ADDED: print a clear timestamped header so cron.log is easy to read
+echo "=== [$(date '+%F %T %Z')] Running Nmap scan (output: $OUTFILE) ==="
+# <<< END ADDED
+
+# Run nmap host discovery with greppable output only (-sn = ping/host discovery).
+${SUDO} "$NMAP" -sn "$SUBNET" -oG "$OUTFILE"
+RC=$?
+
+# <<< ADDED: print a footer summarizing result and exit code for easy log parsing
+echo "=== [$(date '+%F %T %Z')] Nmap finished (exit code: $RC) ==="
+# <<< END ADDED
+
+exit $RC
+```
+
+
+
+
+
+
+
+
+
