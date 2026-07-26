@@ -136,6 +136,22 @@ replace the IP address with your routers IP address.
 
 You should see a list of all hosts currently active on your network. Most if not all of these IP addresses should look familiar. 
 
+
+
+# discover the path for nmap: you will need this for the script
+
+# create a file and paste this script into it
+
+# create second file and paste second script
+
+# set time of your VM to match your time zone
+
+# automate these scripts to run with crontab
+
+
+
+--------------------------------------------------------------------------------------
+
 Now run the command again, but this time save the output to a grepable file. Do this by simply appending `-oG` and the desired file name with the file extension `.gnmap` to the end of the command:
 
 ```bash
