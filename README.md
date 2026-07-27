@@ -36,8 +36,12 @@ Have Chat GPT break down the entire project once compleated and list all tools u
 ```bash
 list all steps here. you can also have chat GPT break this down for you
 ```
-### Phase 1: <a href="Endpoint Database.md">Creating Database for Network Endpoints</a>
+### Phase 1: <a href="Endpoint Database.md">Create Inventory Database for Network Endpoints</a>
 
-### Phase 2: <a href="Endpoint Database.md">Creating list of allowed endpoints on network</a>
+### Phase 2: <a href="Allow List (Network Baseline).md">Create List of Allowed Endpoints on Network</a>
+
+### Phase 3: <a href="Automated Scans.md">Automate Network Scans and Baseline Checks
+</a>
+
 
 
