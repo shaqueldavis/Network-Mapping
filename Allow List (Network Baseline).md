@@ -125,4 +125,14 @@ now we will run the command needed to create a file in your local directory with
 
 the portion of the command between the single quotes should be replaced with your path of choice on your VM.
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
+## Next Phase:
+### Phase 3: <a href="Automated Scans.md">Automate Network Scans and Baseline Checks</a>
