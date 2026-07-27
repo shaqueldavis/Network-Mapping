@@ -770,63 +770,53 @@ You should see:
 <br>
 <br>
 
-You can leave the comments there for now. Scroll down using the down arrow key until you reach the bottom and then hit enter a few times just to create some space.
-
+You can leave the comments there for now because these notes my help you to better understand cron. However they are a little confusing in terms of exactly how you need to structure your scheduled tasks. For that reason we will add some extra notes to help give us a guideline. <br>
+Scroll down using the down arrow key until you reach the bottom and then hit enter a few times just to create some space. Now copy and paste the following into your cron file:
 ```bash
-#!/usr/bin/env bash
-# host-scan-script-nmap.sh
-# Runs an Nmap host-discovery scan and saves the results in greppable format.
-# The script may be executed manually or scheduled through cron.
-
-#########################################
-#  THIS AREA MAY REQUIRE MODIFICATION
-#########################################
-# Replace this with your LAN/subnet if desired
-SUBNET="${SUBNET:-192.168.1.0/24}"
-
-#########################################
-#  THIS AREA WILL REQUIRE MODIFICATION
-#########################################
-# Output directory (will be created if missing)
-OUTDIR="${OUTDIR:-$HOME/Desktop/Github/Network_Mapping/Host_Scans}"
-mkdir -p "$OUTDIR"
-
-#########################################
-#  THIS AREA MAY REQUIRE MODIFICATION
-#########################################
-# Absolute path to the Nmap executable.
-# Verify with: which nmap
-NMAP="/usr/bin/nmap"
-
-# --- PREPARE OUTPUT FILE (single greppable file) ---
-TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
-OUTFILE="$OUTDIR/nmap-scan-${TIMESTAMP}.gnmap"
-
-# Use sudo if it is available without a password prompt;
-# otherwise run Nmap as the current user.
-if sudo -n true 2>/dev/null; then
-  SUDO="sudo"
-else
-  SUDO=""
-fi
-
-# <<< ADDED: print a clear timestamped header so cron.log is easy to read
-echo "=== [$(date '+%F %T %Z')] Running Nmap scan (output: $OUTFILE) ==="
-# <<< END ADDED
-
-# Run nmap host discovery with greppable output only (-sn = ping/host discovery).
-${SUDO} "$NMAP" -sn "$SUBNET" -oG "$OUTFILE"
-RC=$?
-
-# <<< ADDED: print a footer summarizing result and exit code for easy log parsing
-echo "=== [$(date '+%F %T %Z')] Nmap finished (exit code: $RC) ==="
-# <<< END ADDED
-
-exit $RC
+# * * * * *    command to execute
+# │ │ │ │ │
+# │ │ │ │ └────── day of week (0 - 7)
+# │ │ │ └──────── month (1 - 12)
+# │ │ └────────── day of month (1 - 31)
+# │ └──────────── hour (0 - 23)
+# └────────────── minute (0 - 59)
 ```
 
 
 
+
+
+Now hit enter a few more times at the bottom of the cron file to make some extra space. Here we will insert the lines that will automate the scripts.
+
+Copy and paste the following into the bottom of your cron file:
+```bash
+0 20 * * * /home/shaquel/Desktop/Network-Mapping/scripts/host-scan-script-nmap.sh >> /home/shaquel/Desktop/Network-Mapping/cron-logs/cron.log 2>&1
+5 20 * * *  /home/shaquel/Desktop/Network-Mapping/scripts/compare_network_scan.sh >> /home/shaquel/Desktop/Network-Mapping/cron-logs/cron.log 2>&1
+```
+before saving, you will need to modify the time and paths for these cron entries. 
+
+The first line essentially says: at 8pm on the dot, run my host scan script from the specified folder then add the output to a cron log file in the specified folder. <br>
+
+The second line essentially says: at 8:05pm, run my comparison script from the specified folder then add the output to the same cron log file mentioned above.
+
+The key things to note:
+- the first numbers at the beginning of each line represent the minute (0 = "on the dot". 5 = 5 minutes after).
+- the second number represents the hour in military time (20 = 8pm).
+- the asterisks afterwards tell cron to run these scripts every day. Note: This will create some pretty large log files. I'd recommend changing this later.
+- all four paths are full paths so it includes /home/YourUserName. You will need to replace "shaquel" with your user name.
+- you will also need to know the location of your host scan script and your comparison script to point to their appropriate location.
+- the portion after the >> is where cron will save the output from each scan. you can set the path and file where you want it to go here and cron will automatically create the folder(s) and file once it runs.
+
+
+now exit cron by hitting `ctrl + x`. you will be prompted to save the file. Hit `y`, then enter.
+
+and just like that were done! 👏
+
+Now you have an inventory containing all of your network's endpoint devices. A baseline document containing a list of all approved endpoints on your network. A script that scans for unknown devices on the network and outputs the results in 3 formats. a script that compares periodic scans of your network against your baseline file and alerts you if there are any unknown devices. and a cron entry that automates the process for you. 
+
+Thank you for taking this journey with me. This is one way among many that you can track your network devices. The benefit of this method is to get some hands-on granular experience. I hope you have enjoyed yourself and I look forward to sharing new things with you soon.
+
+Be blessed and keep learning new things! 👋
 
 
 
