@@ -28,19 +28,19 @@ This Project covers:
 - Endpoint managment and tracking
 
 ### Tools Used
-```bash
-Have Chat GPT break down the entire project once compleated and list all tools used. Then paste them here broken down into sections with emoji icons and breif descriptions of the purpose and benifit of each tool
-```
+
+"List of tools here"
 
 ## $\color{blue}{\text{Steps}}$
-```bash
-list all steps here. you can also have chat GPT break this down for you
-```
+
 ### Phase 1: <a href="Endpoint Database.md">Create Inventory Database for Network Endpoints</a>
+"description here"
 
 ### Phase 2: <a href="Allow List (Network Baseline).md">Create List of Allowed Endpoints on Network</a>
+"description here"
 
 ### Phase 3: <a href="Automated Scans.md">Automate Network Scans and Baseline Checks</a>
+"description here"
 
 
 
