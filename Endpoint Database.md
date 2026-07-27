@@ -328,6 +328,16 @@ A few things to note:
 ```SQL
 ORDER BY endpoint_id
 ```
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
+## Next Phase:
+### Phase 2: <a href="Allow List (Network Baseline).md">Create List of Allowed Endpoints on Network</a>
 
 
