@@ -29,18 +29,16 @@ This Project covers:
 
 ### Tools Used
 
-"List of tools here"
+- PostgreSQL
+- Crontab
 
 ## $\color{blue}{\text{Steps}}$
 
 ### Phase 1: <a href="Endpoint Database.md">Create Inventory Database for Network Endpoints</a>
-"description here"
 
 ### Phase 2: <a href="Allow List (Network Baseline).md">Create List of Allowed Endpoints on Network</a>
-"description here"
 
 ### Phase 3: <a href="Automated Scans.md">Automate Network Scans and Baseline Checks</a>
-"description here"
 
 
 
