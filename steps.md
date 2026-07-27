@@ -271,7 +271,7 @@ Now switch to the output directory you have set the script to output logs to. Fo
 <img width="2252" height="218" alt="image" src="https://github.com/user-attachments/assets/70093b9f-d6fb-4f4d-9ce6-3473516ddf17" />
 
 The website should be populated with 3 files: a .txt file, a .xml file and a .gnmap file.
-Note: you can save these various output files when running in map by using `-oN` with extension `.txt`, `-oX` with extension `.xml`, or `-oA` with no extension for all three formats in three separate files.
+Note: you can save these various output files when running nmap by using `-oN` with extension `.txt`, `-oX` with extension `.xml`, `-oG` with extension .gnmap, or `-oA` with no extension for all all three formats in three separate files.
 
 Take a look at each file to examine the output. .gnmap is a simplified grepable file with ip addresses. .txt file resembles exactly what you see in your terminal and .xml is the best file to use with scripts and automated processes.
 
@@ -692,13 +692,15 @@ In my output you will notice that there are two unrecognized devices. I know tha
 <br>
 <br>
 
-### Change the Time Zone from the Terminal
+### Automate these scripts to run with crontab
+
+The first thing you want to do is change the Time Zone of your VM to match your location. 
 
 Check your current settings:
 ```bash
 timedatectl
 ```
-SCREENSHOT HERE
+<img width="2098" height="556" alt="Screenshot 2026-07-26 202604" src="https://github.com/user-attachments/assets/5f407408-6f18-4405-8de5-a0eda94b4102" />
 
 <br>
 <br>
@@ -707,12 +709,28 @@ List available time zones
 ```bash
 timedatectl list-timezones
 ```
+<img width="816" height="1470" alt="image" src="https://github.com/user-attachments/assets/de513e5c-24a8-41f4-91ec-3f9ce528892f" />
+
+<br>
+<br>
 
 You can also narrow it down by looking for your specific time zone:
 ```bash
 timedatectl list-timezones | grep New_York
 ```
-SCREENSHOT HERE
+<img width="2100" height="218" alt="image" src="https://github.com/user-attachments/assets/3c767a35-7724-4096-aa10-fbc2df6f688a" />
+
+You can reference the following list to help you narrow down which city is associated with your timezone. 
+- Central Time (CT)
+  - Chicago, Illinois
+- Mountain Time (MT)
+  - Denver, Colorado
+- Pacific Time (PT)
+  - Los Angeles, California
+- Alaska Time (AK)
+  - Anchorage, Alaska
+- Hawaii-Aleutian Time (HA)
+  - Honolulu, Hawaii
 
 <br>
 <br>
@@ -721,55 +739,18 @@ Set the time zone:
 ```bash
 sudo timedatectl set-timezone America/New_York
 ```
+The timezone in the upper right hand corner should change. If not, try clicking on it and it should refresh. 
 
-Verify it worked
+Verify it worked:
 ```bash
 timedatectl
 ```
+<img width="2198" height="554" alt="image" src="https://github.com/user-attachments/assets/e93e71ec-fe41-4349-a42e-428367d4c83a" />
 
+<br>
+<br>
 
-
-
-# automate these scripts to run with crontab
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---------------------------------------------------------------------------------------
-
-Now run the command again, but this time save the output to a grepable file. Do this by simply appending `-oG` and the desired file name with the file extension `.gnmap` to the end of the command:
-
-```bash
-sudo nmap -sn 192.168.x.0/24 -oG hosts.gnmap
-```
-Note: you can also use `-oN` with extension `.txt`, `-oX` with extension `.xml`, or `-oA` with no extension for all three formats in three seprate files.
-
-
-
-
-
-
-
-
-
---------------------------------------------------------------------------------------
-
-
-### Automate the scan with a script
-
-We will be using cron to automate the script. Open cron:
+We will be using cron to automate the two scripts we created. Open cron:
 ```bash
 crontab -e
 ```
