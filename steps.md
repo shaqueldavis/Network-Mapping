@@ -100,7 +100,7 @@ Without this option, the VM may think it's still connected even after the host h
 <br>
 <br>
 
-### 4. Perform a Network Scan
+### 4. Nmap Script
 
 Restart your VM and open a terminal window.
 
@@ -277,6 +277,8 @@ Take a look at each file to examine the output. .gnmap is a simplified grepable 
 
 <br>
 <br>
+
+### 5. Comparison Script  
 
 Now we will create a script that will take the output of our nmap scan and compare it to the content in our baseline endpoints.csv file. It will tell us if any unrecognized devices appear on our network. 
 ```bash
@@ -692,7 +694,7 @@ In my output you will notice that there are two unrecognized devices. I know tha
 <br>
 <br>
 
-### Automate these scripts to run with crontab
+### 6. Automate these scripts to run with crontab
 
 The first thing you want to do is change the Time Zone of your VM to match your location. 
 
@@ -782,10 +784,6 @@ Scroll down using the down arrow key until you reach the bottom and then hit ent
 # └────────────── minute (0 - 59)
 ```
 
-
-
-
-
 Now hit enter a few more times at the bottom of the cron file to make some extra space. Here we will insert the lines that will automate the scripts.
 
 Copy and paste the following into the bottom of your cron file:
@@ -810,7 +808,7 @@ The key things to note:
 
 now exit cron by hitting `ctrl + x`. you will be prompted to save the file. Hit `y`, then enter.
 
-and just like that were done! 👏
+### Just Like That Were Done! 👏
 
 Now you have an inventory containing all of your network's endpoint devices. A baseline document containing a list of all approved endpoints on your network. A script that scans for unknown devices on the network and outputs the results in 3 formats. a script that compares periodic scans of your network against your baseline file and alerts you if there are any unknown devices. and a cron entry that automates the process for you. 
 
